@@ -1,0 +1,38 @@
+import java.util.Scanner;
+
+public class SoccerGame {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int teamAScore = 0;
+        int teamBScore = 0;
+
+        System.out.println("Welcome to the Soccer Game!");
+
+        while (true) {
+            System.out.println("\nSelect an action:");
+            System.out.println("1. Goal for Team A");
+            System.out.println("2. Goal for Team B");
+            System.out.println("3. End Game");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    teamAScore++;
+                    System.out.println("Goal for Team A! Current score - Team A: " + teamAScore + " Team B: " + teamBScore);
+                    break;
+                case 2:
+                    teamBScore++;
+                    System.out.println("Goal for Team B! Current score - Team A: " + teamAScore + " Team B: " + teamBScore);
+                    break;
+                case 3:
+                    System.out.println("Final Score - Team A: " + teamAScore + " Team B: " + teamBScore);
+                    System.out.println("Thanks for playing!");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please choose again.");
+            }
+        }
+    }
+}
