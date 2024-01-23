@@ -1,0 +1,100 @@
+import pygame
+import sys
+import random
+
+# Initialize Pygame
+pygame.init()
+
+# Constants
+WIDTH, HEIGHT = 800, 600
+FPS = 60
+CAR_WIDTH, CAR_HEIGHT = 50, 100
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+# Set up the display
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Car Race Game")
+clock = pygame.time.Clock()
+
+# Load car image
+car_img = pygame.image.load("car.png")  # Make sure to replace "car.png" with the path to your car image
+
+# Define the car class
+class Car(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = car_img
+        self.rect = self.image.get_rect()
+        self.rect.centerx = WIDTH // 2
+        self.rect.bottom = HEIGHT - 20
+        self.speed = 5
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and self.rect.left > 0:
+            self.rect.x -= self.speed
+        if keys[pygame.K_RIGHT] and self.rect.right < WIDTH:
+            self.rect.x += self.speed
+
+# Define the obstacle class
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.width = random.randint(50, 100)
+        self.height = 20
+        self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(0, WIDTH - self.width)
+        self.rect.y = random.randint(-HEIGHT, 0)
+        self.speed = random.randint(3, 8)
+
+    def update(self):
+        self.rect.y += self.speed
+        if self.rect.y > HEIGHT:
+            self.rect.x = random.randint(0, WIDTH - self.width)
+            self.rect.y = random.randint(-HEIGHT, 0)
+
+# Create sprite groups
+all_sprites = pygame.sprite.Group()
+obstacles = pygame.sprite.Group()
+
+# Create the player's car
+player_car = Car()
+all_sprites.add(player_car)
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Update
+    all_sprites.update()
+
+    # Check for collisions
+    hits = pygame.sprite.spritecollide(player_car, obstacles, False)
+    if hits:
+        running = False
+
+    # Spawn new obstacles
+    if random.randint(1, 50) == 1:
+        obstacle = Obstacle()
+        all_sprites.add(obstacle)
+        obstacles.add(obstacle)
+
+    # Draw
+    screen.fill(WHITE)
+    all_sprites.draw(screen)
+
+    # Flip the display
+    pygame.display.flip()
+
+    # Cap the frame rate
+    clock.tick(FPS)
+
+# Quit the game
+pygame.quit()
+sys.exit()
